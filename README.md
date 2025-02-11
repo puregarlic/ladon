@@ -36,6 +36,7 @@ mainly built with Pocket ID in mind.
 **All value are required.**
 
 | Variable Name | Description |
+| ------------- | ----------- |
 | `SESSION_SECRET` | 16 character string used to encrypt and sign session cookies. Make sure this is a randomly-generated value. |
 | `OIDC_CLIENT_ID` | OAuth2 client ID from your OIDC provider. |
 | `OIDC_CLIENT_SECRET` | OAuth2 client secret from your OIDC provider. |
