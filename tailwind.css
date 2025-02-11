@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  /* Rose Pine theme colors */
+  --color-*: initial;
+  --color-base: rgb(25, 23, 36);
+  --color-surface: rgb(31, 29, 46);
+  --color-overlay: rgb(38, 35, 58);
+  --color-muted: rgb(110, 106, 134);
+  --color-subtle: rgb(144, 140, 170);
+  --color-text: rgb(224, 222, 244);
+  --color-love: rgb(235, 111, 146);
+  --color-gold: rgb(246, 193, 119);
+  --color-rose: rgb(235, 188, 186);
+  --color-pine: rgb(49, 116, 143);
+  --color-foam: rgb(156, 207, 216);
+  --color-iris: rgb(196, 167, 231);
+  --color-highlight-low: rgb(33, 32, 46);
+  --color-highlight-med: rgb(64, 61, 82);
+  --color-highlight-high: rgb(82, 79, 103);
+
+  /* Recursive font settings */
+  --font-sans: "Recursive", sans-serif;
+  
+  --font-serif: "Recursive", serif;
+  --font-serif--font-variation-settings: "slnt" -12, "CASL" 1, "CRSV" 1;
+  
+  --font-mono: "Recursive", monospace;
+  --font-mono--font-variation-settings: "MONO" 1;
+}
