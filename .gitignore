@@ -1,2 +1,5 @@
 .env
 *.kdl
+
+*_templ.go
+static/styles.css
