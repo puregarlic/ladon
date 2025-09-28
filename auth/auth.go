@@ -112,8 +112,6 @@ func (a *AuthManager) HandleCallback() http.Handler {
 
 			id := tokens.IDTokenClaims.Subject
 
-			fmt.Println("subject:", id)
-
 			if err := a.Db.Update(func(txn *badger.Txn) error {
 				e := badger.NewEntry([]byte(id), data).WithTTL(time.Duration(tokens.ExpiresIn) * time.Second)
 				err := txn.SetEntry(e)
@@ -167,7 +165,7 @@ func (a *AuthManager) GetSession(r *http.Request) (*oidc.IDTokenClaims, error) {
 
 		return nil
 	}); err != nil {
-		return nil, err
+		return nil, ErrNoSession
 	}
 
 	claims, err := rp.VerifyTokens[*oidc.IDTokenClaims](
