@@ -1,3 +1,5 @@
+github.com/Piszmog/go-tw v1.0.1 h1:HL5ViJ6gqvp9vKWVgkAYnjJmvX8Y2sMBoUmkDPXk41U=
+github.com/Piszmog/go-tw v1.0.1/go.mod h1:mn9LjL3T9gMNAZ9XKU0rDmLunCbp/fetzAvWnOybRhw=
 github.com/a-h/parse v0.0.0-20250122154542-74294addb73e h1:HjVbSQHy+dnlS6C3XajZ69NYAb5jbGNfHanvm1+iYlo=
 github.com/a-h/parse v0.0.0-20250122154542-74294addb73e/go.mod h1:3mnrkvGpurZ4ZrTDbYU84xhwXW2TjTKShSwjRi2ihfQ=
 github.com/a-h/templ v0.3.833 h1:L/KOk/0VvVTBegtE0fp2RJQiBm7/52Zxv5fqlEHiQUU=

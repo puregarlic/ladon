@@ -1,6 +1,6 @@
 module ladon
 
-go 1.23.7
+go 1.24.0
 
 toolchain go1.24.1
 
@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/Piszmog/go-tw v1.0.1 // indirect
 	github.com/a-h/parse v0.0.0-20250122154542-74294addb73e // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
@@ -55,4 +56,7 @@ require (
 	golang.org/x/oauth2 v0.30.0 // indirect
 )
 
-tool github.com/a-h/templ/cmd/templ
+tool (
+	github.com/Piszmog/go-tw
+	github.com/a-h/templ/cmd/templ
+)

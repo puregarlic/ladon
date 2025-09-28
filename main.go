@@ -1,3 +1,6 @@
+//go:generate go tool templ generate
+//go:generate go tool go-tw -i tailwind.css -o static/styles.css
+
 package main
 
 import (
