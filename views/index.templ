@@ -18,7 +18,7 @@ func StringToVibrantHSL(s string) string {
 templ renderLink(name string, url string) {
 	<li class="col-span-1 grid grid-cols-subgrid">
 		<a
-			class="aspect-square bg-surface p-4 rounded-lg text-sm flex flex-col justify-between leading-none"
+			class="aspect-square bg-surface p-4 rounded-lg text-sm flex flex-col justify-between leading-none border border-muted/20"
 			href={ templ.URL(url) }
 			target="_blank"
 			rele="noopener noreferrer"
@@ -51,7 +51,7 @@ templ renderGroup(name string, nodes []*document.Node) {
 templ Authenticate() {
 	@Document("Log In") {
 		<div class="w-screen h-screen flex items-center justify-center">
-			<main class="w-full max-w-xs bg-surface rounded-lg p-4">
+			<main class="w-full max-w-xs bg-surface rounded-lg p-4 border border-muted/20">
 				<p class="mb-3 font-serif">Can I see some ID, please?</p>
 				<a href="/login" class="block text-center text-sm rounded py-2 px-2 bg-foam/20 text-foam">Log In with OIDC</a>
 			</main>
