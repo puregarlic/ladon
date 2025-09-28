@@ -7,6 +7,7 @@ RUN go mod download
 
 COPY . ./
 
+RUN CGO_ENABLED=0 GOOS=linux go generate
 RUN CGO_ENABLED=0 GOOS=linux go build -o /ladon .
 
 FROM alpine:3 AS run
