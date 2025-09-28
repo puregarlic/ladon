@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	badger "github.com/dgraph-io/badger/v4"
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/zitadel/logging"
 	"github.com/zitadel/oidc/v3/pkg/client/rp"
@@ -28,6 +29,7 @@ func State() string {
 }
 
 type AuthManager struct {
+	Db            *badger.DB
 	Env           *EnvConfig
 	CookieHandler *httphelper.CookieHandler
 	RelyingParty  rp.RelyingParty
@@ -38,7 +40,12 @@ type AuthManager struct {
 func NewAuthManager(logger *slog.Logger) *AuthManager {
 	env := EnvMustParse()
 
-	cookieHandler := httphelper.NewCookieHandler(env.SessionSecret, env.SessionSecret)
+	db, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
+	if err != nil {
+		panic(err)
+	}
+
+	cookieHandler := httphelper.NewCookieHandler(env.SessionSecret, env.SessionSecret, httphelper.WithUnsecure())
 
 	client := &http.Client{
 		Timeout: time.Minute,
@@ -72,6 +79,7 @@ func NewAuthManager(logger *slog.Logger) *AuthManager {
 	}
 
 	return &AuthManager{
+		Db:            db,
 		Env:           env,
 		CookieHandler: cookieHandler,
 		RelyingParty:  provider,
@@ -102,7 +110,22 @@ func (a *AuthManager) HandleCallback() http.Handler {
 				return
 			}
 
-			a.CookieHandler.SetCookie(w, SESSION_NAME, string(data))
+			id := tokens.IDTokenClaims.Subject
+
+			fmt.Println("subject:", id)
+
+			if err := a.Db.Update(func(txn *badger.Txn) error {
+				e := badger.NewEntry([]byte(id), data).WithTTL(time.Duration(tokens.ExpiresIn) * time.Second)
+				err := txn.SetEntry(e)
+				return err
+			}); err != nil {
+				http.Error(w, "failed to cache user session", http.StatusInternalServerError)
+			}
+
+			if err := a.CookieHandler.SetCookie(w, SESSION_NAME, id); err != nil {
+				http.Error(w, "failed to set session cookie", http.StatusInternalServerError)
+				return
+			}
 
 			w.Header().Add("Location", "/")
 			w.WriteHeader(http.StatusFound)
@@ -121,7 +144,7 @@ func (a *AuthManager) HandleLogout() http.Handler {
 }
 
 func (a *AuthManager) GetSession(r *http.Request) (*oidc.IDTokenClaims, error) {
-	payload, err := a.CookieHandler.CheckCookie(r, SESSION_NAME)
+	id, err := a.CookieHandler.CheckCookie(r, SESSION_NAME)
 	if errors.Is(err, http.ErrNoCookie) {
 		return nil, ErrNoSession
 	} else if err != nil {
@@ -129,7 +152,23 @@ func (a *AuthManager) GetSession(r *http.Request) (*oidc.IDTokenClaims, error) {
 	}
 
 	tokens := &oidc.Tokens[*oidc.IDTokenClaims]{}
-	json.Unmarshal([]byte(payload), tokens)
+	if err := a.Db.View(func(txn *badger.Txn) error {
+		item, err := txn.Get([]byte(id))
+		if err != nil {
+			return err
+		}
+
+		err = item.Value(func(val []byte) error {
+			return json.Unmarshal(val, tokens)
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return nil, err
+	}
 
 	claims, err := rp.VerifyTokens[*oidc.IDTokenClaims](
 		context.TODO(),
